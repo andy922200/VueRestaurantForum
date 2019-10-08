@@ -14,11 +14,16 @@
         <p class="mt-3">
           <button
             v-if="user.isFollowed"
-            @click.stop.prevent="deleteFollow"
+            @click.stop.prevent="deleteFollow(user.id)"
             type="button"
             class="btn btn-danger"
           >取消追蹤</button>
-          <button v-else type="button" @click.stop.prevent="addFollow" class="btn btn-primary">追蹤</button>
+          <button
+            v-else
+            type="button"
+            @click.stop.prevent="addFollow(user.id)"
+            class="btn btn-primary"
+          >追蹤</button>
         </p>
       </div>
     </div>
@@ -260,8 +265,11 @@ export default {
     fetchUsers() {
       this.users = dummyData.users;
     },
-    deleteFollow() {
+    deleteFollow(userId) {
       this.users = this.users.map(user => {
+        if (user.id !== userId) {
+          return user;
+        }
         return {
           ...user,
           isFollowed: false,
@@ -269,8 +277,11 @@ export default {
         };
       });
     },
-    addFollow() {
+    addFollow(userId) {
       this.users = this.users.map(user => {
+        if (user.id !== userId) {
+          return user;
+        }
         return {
           ...user,
           isFollowed: true,
