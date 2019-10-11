@@ -12,7 +12,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'roots',
+      name: 'root',
       redirect: '/restaurants'
     },
     {
@@ -54,6 +54,21 @@ export default new Router({
       path: '/users/top',
       name: 'users-top',
       component: () => import('./views/UsersTop.vue')
+    },
+    {
+      path: '/admin',
+      exact: true,
+      redirect: '/admin/restaurants'
+    },
+    {
+      path: '/admin/restaurants',
+      name: 'admin-restaurants',
+      component: () => import('./views/AdminRestaurants.vue')
+    },
+    {
+      path: '/admin/restaurants/:id',
+      name: 'admin-restaurant',
+      component: () => import('./views/AdminRestaurant.vue')
     },
     {
       path: '*',
