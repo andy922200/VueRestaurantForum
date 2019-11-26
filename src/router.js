@@ -41,6 +41,11 @@ export default new Router({
       component: () => import('./views/RestaurantsTop.vue')
     },
     {
+      path: '/admin/restaurants/new',
+      name: 'admin-restaurant-new',
+      component: () => import('./views/AdminRestaurantNew.vue')
+    },
+    {
       path: '/restaurants/:id',
       name: 'restaurant',
       component: () => import('./views/Restaurant.vue')
@@ -54,6 +59,11 @@ export default new Router({
       path: '/users/top',
       name: 'users-top',
       component: () => import('./views/UsersTop.vue')
+    },
+    {
+      path: '/users/:id',
+      name: 'user',
+      component: () => import('./views/User.vue')
     },
     {
       path: '/admin',
