@@ -51,6 +51,11 @@ export default new Router({
       component: () => import('./views/Restaurant.vue')
     },
     {
+      path: '/admin/restaurants/:id/edit',
+      name: 'admin-restaurant-edit',
+      component: () => import('./views/AdminRestaurantEdit.vue')
+    },
+    {
       path: '/restaurants/:id/dashboard',
       name: 'restaurant-dashboard',
       component: () => import('./views/RestaurantDashboard.vue')
