@@ -47,6 +47,8 @@
 </template>
 
 <script>
+import authorizationAPI from "./../apis/authorization";
+
 export default {
   name: "SignIn",
   data() {
@@ -57,12 +59,17 @@ export default {
   },
   methods: {
     handleSubmit(e) {
-      const data = JSON.stringify({
-        email: this.email,
-        password: this.password
-      });
-      //TODO: 向後端驗證使用者登入資訊是否合法
-      console.log("data", data);
+      authorizationAPI
+        .signIn({
+          email: this.email,
+          password: this.password
+        })
+        .then(res => {
+          const { data } = res;
+          localStorage.setItem("token", data.token);
+          // 成功登入後轉址到餐聽首頁
+          this.$router.push("/restaurants");
+        });
     }
   }
 };
