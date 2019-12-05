@@ -64,37 +64,39 @@ export default {
     };
   },
   methods: {
-    handleSubmit(e) {
-      if (!this.email || !this.password) {
-        Toast.fire({
-          icon: "warning",
-          title: "請填入 email 和 password"
-        });
-      }
-
-      this.isProcessing = true;
-
-      authorizationAPI
-        .signIn({
-          email: this.email,
-          password: this.password
-        })
-        .then(res => {
-          const { data } = res;
-          localStorage.setItem("token", data.token);
-          // 成功登入後轉址到餐聽首頁
-          this.$router.push("/restaurants");
-        })
-        .catch(error => {
-          this.password = "";
-          // 顯示錯誤提示
+    async handleSubmit(e) {
+      try {
+        if (!this.email || !this.password) {
           Toast.fire({
             icon: "warning",
-            title: "請確認您輸入的帳號或密碼正確"
+            title: "請填入 email 和 password"
           });
-          this.isProcessing = false;
-          console.log("error", error);
+          return;
+        }
+
+        this.isProcessing = true;
+
+        const res = await authorizationAPI.signIn({
+          email: this.email,
+          password: this.password
         });
+        const { data, statusText } = res;
+
+        if (statusText !== "OK" || data.status !== "success") {
+          throw new Error(statusText);
+        }
+
+        localStorage.setItem("token", data.token);
+        // 成功登入後轉址到餐聽首頁
+        this.$router.push("/restaurants");
+      } catch (error) {
+        this.password = "";
+        this.isProcessing = false;
+        Toast.fire({
+          icon: "warning",
+          title: "請確認您輸入的帳號或密碼正確"
+        });
+      }
     }
   }
 };
