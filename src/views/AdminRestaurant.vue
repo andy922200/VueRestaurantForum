@@ -38,8 +38,10 @@
   </div>
 </template>
 <script>
+import adminAPI from "./../apis/admin";
+import { Toast } from "./../utils/helpers";
 import { emptyImageFilter } from "./../utils/mixins";
-const dummyData = {
+/*const dummyData = {
   restaurant: {
     id: 2,
     name: "Mrs. Mckenzie Johnston",
@@ -59,7 +61,7 @@ const dummyData = {
       updatedAt: "2019-06-22T09:00:43.000Z"
     }
   }
-};
+};*/
 export default {
   name: "AdminRestaurant",
   mixins: [emptyImageFilter],
@@ -81,20 +83,39 @@ export default {
     const { id: restaurantId } = this.$route.params;
     this.fetchRestaurant(restaurantId);
   },
+  beforeRouteUpdate(to, from, next) {
+    const { id } = to.params;
+    this.fetchRestaurant(id);
+    next();
+  },
   methods: {
-    fetchRestaurant(restaurantId) {
-      const { restaurant } = dummyData;
-      this.restaurant = {
-        ...this.restaurant,
-        id: restaurant.id,
-        name: restaurant.name,
-        categoryName: restaurant.Category.name,
-        image: restaurant.image,
-        openingHours: restaurant.opening_hours,
-        tel: restaurant.tel,
-        address: restaurant.address,
-        description: restaurant.description
-      };
+    async fetchRestaurant(restaurantId) {
+      try {
+        const {
+          data: { restaurant },
+          statusText
+        } = await adminAPI.restaurants.getDetail({ restaurantId });
+        if (statusText !== "OK") {
+          throw new Error(statusText);
+        }
+
+        this.restaurant = {
+          ...this.restaurant,
+          id: restaurant.id,
+          name: restaurant.name,
+          categoryName: restaurant.Category.name,
+          image: restaurant.image,
+          openingHours: restaurant.opening_hours,
+          tel: restaurant.tel,
+          address: restaurant.address,
+          description: restaurant.description
+        };
+      } catch (err) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得餐廳資料，請稍後再試"
+        });
+      }
     }
   }
 };

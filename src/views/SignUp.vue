@@ -1,7 +1,7 @@
 // ./src/views/SignUp.vue
 <template>
   <div class="container py-5">
-    <form class="w-100" @submit.prevent.stop="handleSubmit">
+    <form class="w-100" @submit.stop.prevent="handleSubmit">
       <div class="text-center mb-4">
         <h1 class="h3 mb-3 font-weight-normal">Sign Up</h1>
       </div>
@@ -59,7 +59,11 @@
         />
       </div>
 
-      <button class="btn btn-lg btn-primary btn-block mb-3" type="submit">Submit</button>
+      <button
+        class="btn btn-lg btn-primary btn-block mb-3"
+        type="submit"
+        :disabled="isProcessing"
+      >{{isProcessing ? "處理中" : "送出"}}</button>
 
       <div class="text-center mb-3">
         <p>
@@ -73,25 +77,64 @@
 </template>
 
 <script>
+import authorizationAPI from "./../apis/authorization";
+import { Toast } from "./../utils/helpers";
+
 export default {
+  name: "SignUp",
   data() {
     return {
       name: "",
       email: "",
       password: "",
-      passwordCheck: ""
+      passwordCheck: "",
+      isProcessing: false
     };
   },
   methods: {
-    handleSubmit(e) {
-      const data = JSON.stringify({
-        name: this.name,
-        email: this.email,
-        password: this.password,
-        passwordCheck: this.passwordCHeck
-      });
-      // TODO: 向後端驗證使用者登入資訊是否合法
-      console.log("data", data);
+    async handleSubmit(e) {
+      try {
+        this.isProcessing = true;
+        if (
+          !this.name ||
+          !this.email ||
+          !this.password ||
+          !this.passwordCheck
+        ) {
+          Toast.fire({
+            type: "warning",
+            title: "請確認已填寫所有欄位"
+          });
+          this.isProcessing = false;
+          return;
+        }
+        if (this.password !== this.passwordCheck) {
+          Toast.fire({
+            type: "warning",
+            title: "兩次輸入的密碼不同"
+          });
+          this.passwordCheck = "";
+          this.isProcessing = false;
+          return;
+        }
+        const { data, statusText } = await authorizationAPI.signUp({
+          name: this.name,
+          email: this.email,
+          password: this.password,
+          passwordCheck: this.passwordCheck
+        });
+        if (statusText !== "OK" || data.status !== "success") {
+          throw new Error(data.message);
+        }
+        // 成功的話則轉址到 `/signin`
+        this.$router.push("/signin");
+      } catch (err) {
+        Toast.fire({
+          icon: "error",
+          title: "無法建立新使用者，請稍後再試"
+        });
+        this.isProcessing = false;
+      }
     }
   }
 };
