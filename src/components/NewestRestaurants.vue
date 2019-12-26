@@ -5,8 +5,7 @@
     <div class="card-body">
       <div v-for="restaurant in restaurants" :key="restaurant.id">
         <h4>
-          <router-link :to="{name:'restaurant',params:{id:restaurant.id}}">{{restaurant.name}}</router-link>&nbsp;
-          <small>{{restaurant.Category.name}}</small>
+          <router-link :to="{name:'restaurant',params:{id:restaurant.id}}">{{restaurant.name}}</router-link>
         </h4>
         <p>{{restaurant.description}}</p>
         {{restaurant.createdAt | fromNow}}

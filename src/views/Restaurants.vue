@@ -49,7 +49,7 @@ export default {
   },
   created() {
     const { page, categoryId } = this.$route.query;
-    this.fetchRestaurants({ page, categoryId });
+    this.fetchRestaurants({ page: 1, categoryId: "" });
   },
   beforeRouteUpdate(to, from, next) {
     const { page, categoryId } = to.query;
@@ -57,7 +57,7 @@ export default {
     next();
   },
   methods: {
-    async fetchRestaurants({ page = 1, categoryId }) {
+    async fetchRestaurants({ page, categoryId }) {
       try {
         const res = await restaurantsAPI.getRestaurants({
           page,
