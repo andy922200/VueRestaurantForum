@@ -13,7 +13,8 @@
         <p class="card-text title-wrap">
           <router-link :to="{name:'restaurant',params:{id:restaurant.id}}">{{restaurant.name}}</router-link>
         </p>
-        <span class="badge badge-secondary">{{restaurant.Category.name}}</span>
+        <span v-if="!restaurant.CategoryId" class="badge badge-secondary">none</span>
+        <span v-else class="badge badge-secondary">{{restaurant.Category.name}}</span>
         <p class="card-text text-truncate">{{restaurant.description}}</p>
       </div>
       <div class="card-footer">

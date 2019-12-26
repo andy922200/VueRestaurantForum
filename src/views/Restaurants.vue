@@ -57,7 +57,7 @@ export default {
     next();
   },
   methods: {
-    async fetchRestaurants({ page = 1, categoryId = "" }) {
+    async fetchRestaurants({ page = 1, categoryId }) {
       try {
         const res = await restaurantsAPI.getRestaurants({
           page,
