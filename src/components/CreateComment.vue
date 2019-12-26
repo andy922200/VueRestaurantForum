@@ -12,7 +12,9 @@
 </template>
 
 <script>
-import uuid from "uuid/v4";
+import commentAPI from "./../apis/comment";
+import { Toast } from "../utils/helpers";
+
 export default {
   props: {
     restaurantId: {
@@ -26,14 +28,36 @@ export default {
     };
   },
   methods: {
-    handleSubmit() {
-      console.log("submit");
-      this.$emit("after-create-comment", {
-        commentId: uuid(), // 尚未串接 API 暫時使用隨機的 id
-        restaurantId: this.restaurantId,
-        text: this.text
-      });
-      this.text = "";
+    async handleSubmit() {
+      if (!this.text) {
+        Toast.fire({
+          icon: "error",
+          title: "請檢查欄位是否空白"
+        });
+        return;
+      }
+      try {
+        const { data, statusText } = await commentAPI.postComment({
+          restaurantId: this.restaurantId,
+          text: this.text
+        });
+
+        if (statusText !== "OK" || data.status !== "success") {
+          throw new Error(statusText);
+        }
+
+        this.$emit("after-create-comment", {
+          commentId: data.commentId,
+          restaurantId: this.restaurantId,
+          text: this.text
+        });
+        this.text = "";
+      } catch (err) {
+        Toast.fire({
+          icon: "error",
+          title: "無法新增評論，請稍後再試"
+        });
+      }
     }
   }
 };
