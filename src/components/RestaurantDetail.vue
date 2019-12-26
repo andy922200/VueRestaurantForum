@@ -8,7 +8,7 @@
     <div class="col-lg-4">
       <img
         class="img-responsive center-block"
-        src="https://loremflickr.com/320/240/food,dessert,restaurant/"
+        :src="restaurant.image"
         style="width: 250px;margin-bottom: 25px;"
       />
       <div class="contact-info-wrap">
@@ -99,6 +99,14 @@ export default {
       this.restaurant = {
         ...this.restaurant, // 保留餐廳內原有資料
         isLiked: false
+      };
+    }
+  },
+  watch: {
+    initialRestaurant(restaurant) {
+      this.restaurant = {
+        ...this.restaurant,
+        ...restaurant
       };
     }
   }
