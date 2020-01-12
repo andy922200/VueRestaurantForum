@@ -1,7 +1,7 @@
 // ./src/views/RestaurantOverview.vue
 <template>
   <div class="row">
-    <div class="col-md-12 mb-3">
+    <div class="col-md-12 mb-3" v-if="restaurant.name">
       <h1>{{restaurant.name}}</h1>
       <h5>[{{restaurant.Category.name}}]</h5>
       <hr />

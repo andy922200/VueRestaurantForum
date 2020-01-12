@@ -36,11 +36,6 @@ export default {
       required: true
     }
   },
-  data() {
-    return {
-      currentUser: dummyUser.currentUser
-    };
-  },
   computed: {
     ...mapState(["currentUser"])
   },
